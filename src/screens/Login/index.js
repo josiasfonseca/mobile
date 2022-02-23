@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform
 } from 'react-native'
 import { TextInput } from 'react-native'
 import styles from './styles'
@@ -25,7 +26,7 @@ export default function Login({ navigation }) {
     }
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Home' }],
+      routes: [{ name: 'UsuarioList' }],
     })
     // let response = await fetch(
     //   'http://localhost:8000/api/auth/login?NOME=' +
@@ -49,10 +50,10 @@ export default function Login({ navigation }) {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  style={styles.container}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}
+      >
         <View>
           <View style={styles.title}>
             <View>
@@ -105,7 +106,7 @@ export default function Login({ navigation }) {
             </View>
           </View>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   )
 }

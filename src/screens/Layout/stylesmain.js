@@ -5,6 +5,7 @@ const stylesmain = StyleSheet.create({
     flex: 1,
     paddingTop: 0,
     backgroundColor: '#1a75c9',
+    width: '100%'
   },
   colorBackground: {
       backgroundColor: '#1a75c9'
