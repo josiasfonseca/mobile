@@ -66,6 +66,27 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         marginLeft: 10,
     },
+    buttonSalvar: {
+        width: '100%',
+    },
+    inputButtonSalvar: {
+        marginTop: 20,
+        marginLeft: 30,
+        marginRight: 30,
+        width: '85%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 50,
+        backgroundColor: '#cccccc',
+    },
+    textButtonSalvar: {
+        fontSize: 17
+    },
+    viewButtonSalvar: {
+        padding: 5,
+    },
 })
 
 export default styles

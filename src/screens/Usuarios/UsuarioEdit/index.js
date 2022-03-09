@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, Button, TextInput } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import stylesmain from '../../Layout/stylesmain'
@@ -6,8 +7,11 @@ import styles from './styles'
 
 export default function UsuarioEdit({ route, navigation }) {
 
-    const user = route.params.user
-    // Alert.alert(JSON.stringify(route.params.user))
+    const [user, setUser] = useState(route.params.user)
+
+    function salvar() {
+        Alert.alert('Nome: ' + user.nome + '\nEmail: ' + user.email + '\nID: ' + user.nome)
+    }
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={stylesmain.container}>
@@ -23,7 +27,7 @@ export default function UsuarioEdit({ route, navigation }) {
                                 value={user.id}
                                 placeholderTextColor="#cccccc"
                                 placeholder="Código"
-                                maxLength={20}
+                                maxLength={10}
                                 isReadonly
                             />
                         </View>
@@ -32,7 +36,8 @@ export default function UsuarioEdit({ route, navigation }) {
                                 value={user.nome}
                                 placeholderTextColor="#cccccc"
                                 placeholder="Nome"
-                                maxLength={20}
+                                maxLength={100}
+                                onChangeText={(text) => setUser({ ...user, nome: text })}
                             />
                         </View>
                         <View style={styles.viewEmail}>
@@ -40,8 +45,22 @@ export default function UsuarioEdit({ route, navigation }) {
                                 value={user.email}
                                 placeholderTextColor="#cccccc"
                                 placeholder="Email"
-                                maxLength={20}
+                                maxLength={100}
+                                onChangeText={(text) => setUser({ ...user, email: text })}
                             />
+                        </View>
+                        <View>
+
+                            <View style={styles.viewButtonSalvar}>
+                                <TouchableOpacity
+                                    style={styles.inputButtonSalvar}
+                                    onPress={() => salvar()}
+                                >
+                                    <Text style={styles.textButtonSalvar}>
+                                        Salvar
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
