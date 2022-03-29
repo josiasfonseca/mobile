@@ -1,70 +1,146 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, Button, TextInput } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import stylesmain from '../../Layout/stylesmain'
+import { useState, useEffect } from 'react';
+import { View, TouchableOpacity, ToastAndroid, Keyboard } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native';
+import { ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import styles from './styles'
 
+import {
+    Button,
+    Text,
+    TextInput
+} from 'react-native-paper';
 export default function UsuarioEdit({ route, navigation }) {
 
-    const [user, setUser] = useState(route.params.user)
+    const [user, setUser] = useState(usuario)
+    const [userList, setUserList] = useState([])
 
-    function salvar() {
-        Alert.alert('Nome: ' + user.nome + '\nEmail: ' + user.email + '\nID: ' + user.nome)
+    const usuario = {
+        id: '',
+        nome: '',
+        email: ''
+    }
+
+    useEffect(async () => {
+        if (route.params.usuario.id)
+            setUser({ ...route.params.usuario })
+        else
+            setUser({ ...usuario })
+
+        const usu = await AsyncStorage.getItem('usuarios')
+        const u = usu ? JSON.parse(usu) : null
+
+        setUserList(u)
+    }, [route])
+
+
+    const onChangeValueInput = (key, value) => {
+        setUser({ ...user, [key]: value })
+    }
+
+    async function salvar() {
+        ToastAndroid.show('Salvando...', ToastAndroid.SHORT)
+
+        if (user.id && user.id != '') {
+            if (userList.length > 0) {
+                const copy = userList
+                const indexUser = copy.findIndex(e => e.id == user.id)
+                if (indexUser > -1)
+                    copy.splice(indexUser, 1)
+
+                copy.push(user)
+                setUserList({ ...copy })
+                // console.log(userl)
+            } else {
+                console.log('incluindo', user)
+                setUserList({ ...user })
+            }
+        } else {
+            ToastAndroid.show(`Informe o ID do usuário `, ToastAndroid.LONG)
+            return
+        }
+
+
+        // await AsyncStorage.removeItem('usuarios')
+        await AsyncStorage.setItem('usuarios', JSON.stringify(userList))
+
+        console.log('USER LIST', userList)
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'UsuarioList' }],
+        })      
     }
     return (
-        <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={stylesmain.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView>
                 <View style={styles.container}>
-                    <View style={styles.title}>
-                        <View>
-                            <Text style={styles.header}>Edição de Usuário</Text>
-                        </View>
+                    <View style={styles.inputText}>
+                        <TextInput
+                            dense
+                            activeOutlineColor="#0e0e0e"
+                            placeholderTextColor="#000"
+                            label="ID"
+                            mode="outlined"
+                            maxLength={10}
+                            keyboardType='numeric'
+                            value={user && user.id ? user.id.toString() : ''}
+                            onChangeText={(text) => onChangeValueInput('id', text)}
+                        />
+                    </View>
+                    <View style={styles.inputText}>
+                        <TextInput
+                            dense
+                            activeOutlineColor="#0e0e0e"
+                            placeholderTextColor="#cccccc"
+                            label="Nome"
+                            mode="outlined"
+                            maxLength={45}
+                            value={user && user.nome ? user.nome.toString() : ''}
+                            onChangeText={(text) => onChangeValueInput('nome', text)}
+                        />
+                    </View>
+                    <View style={styles.inputText}>
+                        <TextInput
+                            dense
+                            activeOutlineColor="#0e0e0e"
+                            placeholderTextColor="#cccccc"
+                            label="Email"
+                            mode="outlined"
+                            maxLength={45}
+                            value={user && user.email ? user.email.toString() : ''}
+                            onChangeText={(text) => onChangeValueInput('email', text)}
+                        />
                     </View>
                     <View>
-                        <View style={styles.viewCodigo} >
-                            <TextInput style={styles.inputTextCodigo}
-                                value={user.id}
-                                placeholderTextColor="#cccccc"
-                                placeholder="Código"
-                                maxLength={10}
-                                isReadonly
-                            />
-                        </View>
-                        <View style={styles.viewNome}>
-                            <TextInput style={styles.inputTextNome}
-                                value={user.nome}
-                                placeholderTextColor="#cccccc"
-                                placeholder="Nome"
-                                maxLength={100}
-                                onChangeText={(text) => setUser({ ...user, nome: text })}
-                            />
-                        </View>
-                        <View style={styles.viewEmail}>
-                            <TextInput style={styles.inputTextEmail}
-                                value={user.email}
-                                placeholderTextColor="#cccccc"
-                                placeholder="Email"
-                                maxLength={100}
-                                onChangeText={(text) => setUser({ ...user, email: text })}
-                            />
-                        </View>
-                        <View>
 
+                        <View style={styles.buttons}>
+                            <View style={styles.viewButtonCancelar}>
+                                <Button
+                                    style={styles.buttonCancelar}
+                                    icon="backspace"
+                                    // labelStyle={{ fontSize: 15}}
+                                    mode="contained"
+                                    color="#B22222"
+                                    onPress={() => navigation.goBack()}>
+                                    Cancelar
+                                </Button>
+                            </View>
                             <View style={styles.viewButtonSalvar}>
-                                <TouchableOpacity
-                                    style={styles.inputButtonSalvar}
-                                    onPress={() => salvar()}
-                                >
-                                    <Text style={styles.textButtonSalvar}>
-                                        Salvar
-                                    </Text>
-                                </TouchableOpacity>
+                                <Button
+                                    style={styles.buttonSalvar}
+                                    icon="content-save"
+                                    // labelStyle={{ fontSize: 15 }}
+                                    mode="contained"
+                                    color="#3CB371"
+                                    onPress={() => salvar()}>
+                                    Salvar
+                                </Button>
                             </View>
                         </View>
                     </View>
                 </View>
-            </View>
-        </SafeAreaView>
+            </ScrollView>
+        </TouchableWithoutFeedback>
     )
 }

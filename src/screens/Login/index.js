@@ -13,40 +13,30 @@ import {
 import { TextInput } from 'react-native'
 import styles from './styles'
 import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
+import { ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { realizarLogin } from '../../api/LoginService/'
 
 export default function Login({ navigation }) {
   const [user, setUser] = useState(null)
   const [password, setPassword] = useState(null)
-  // const [authUser, setAuthUser] = useState(null)
 
   async function auth() {
+    await AsyncStorage.removeItem('usuarios')
     if (user == null || password == null) {
       Alert.alert('Informe o usuário e a senha!')
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'UsuarioList' }],
-    })
-    // let response = await fetch(
-    //   'http://localhost:8000/api/auth/login?NOME=' +
-    //     user +
-    //     '&password=' +
-    //     password,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //   }
-    // )
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     setToken(res.access_token)
-    //     Alert.alert('Logado')
-    //   })
-    //   .catch((err) => Alert.alert(JSON.stringify(err)))
+     await realizarLogin(user, password)
+      // .then((res) => res.json())
+      .then((res) => {
+        ToastAndroid.show('Login realizado', ToastAndroid.LONG)
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'UsuarioList' }],
+        })
+      })
+      .catch(() => ToastAndroid.show('Erro ao realizar login', ToastAndroid.LONG))
   }
 
   return (

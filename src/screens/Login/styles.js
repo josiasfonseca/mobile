@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   inputTextUsuario: {
-    fontSize: 13,
+    fontSize: 15,
     color: '#ffffff',
     marginLeft: 10,
   },
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   inputTextSenha: {
-    fontSize: 13,
+    fontSize: 15,
     color: '#ffffff',
     marginLeft: 10,
   },
